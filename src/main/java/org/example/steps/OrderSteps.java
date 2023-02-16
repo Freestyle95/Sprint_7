@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.example.ApiConfig;
 import org.example.models.Order;
 
 import java.time.LocalDateTime;
@@ -14,12 +15,16 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class OrderSteps {
+
+    private final static String ORDERS_PATH = ApiConfig.BASE_PATH + "/orders";
+
     @Step("Отправка запроса на создание заказа")
     public static Response sendCreateOrderRequest(Order order) {
         return given()
                 .header("Content-type", "application/json")
+                .basePath(ORDERS_PATH)
                 .body(order)
-                .post("/orders");
+                .post();
     }
 
     @Step("Генерация случайного заказа")
@@ -40,20 +45,23 @@ public class OrderSteps {
     @Step("Отправка запроса на получение заказа по номеру: {0}")
     public static Response sendGetOrderByTrackRequest(Integer track) {
         return given()
+                .basePath(ORDERS_PATH)
                 .queryParam("t", track)
-                .get("/orders/track");
+                .get("/track");
     }
 
     @Step("Отправка запроса на получение списка заказов")
     public static Response sendGetOrdersRequest(Map<String, ?> queryParams) {
         return given()
+                .basePath(ORDERS_PATH)
                 .queryParams(queryParams)
-                .get("/orders");
+                .get();
     }
 
     @Step("Отправка запроса на получение списка заказов")
     public static Response sendGetOrdersRequest() {
         return given()
-                .get("/orders");
+                .basePath(ORDERS_PATH)
+                .get();
     }
 }
